@@ -14,10 +14,10 @@ public class UserDAO {
         }
     }
 
-    public boolean register(String username, String password, String secretquestion, String secretanswer) {
-        String sql = "INSERT INTO users (username, password, secretquestion, secretanswer) VALUES (?, ?, ?, ?)";
+    public boolean register(String email, String password, String secretquestion, String secretanswer) {
+        String sql = "INSERT INTO users (email, password, secretquestion, secretanswer) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
+            statement.setString(1, email);
             statement.setString(2, password);
             statement.setString(3, secretquestion);
             statement.setString(4, secretanswer);
@@ -29,10 +29,10 @@ public class UserDAO {
         }
     }
     
-    public boolean login(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    public boolean login(String email, String password) {
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
+            statement.setString(1, email);
             statement.setString(2, password);
             ResultSet result = statement.executeQuery();
             return result.next();
@@ -42,10 +42,10 @@ public class UserDAO {
         }
     }
     
-    public boolean isUserExists(String username) {
-        String sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+    public boolean isUserExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
+            statement.setString(1, email);
             ResultSet result = statement.executeQuery();
             return result.getInt(1) > 0;
         } catch (Exception e) {
@@ -54,10 +54,10 @@ public class UserDAO {
         }
     }
 
-    public String getSecretQuestion(String username) {
-        String sql = "SELECT secretquestion FROM users WHERE username = ?";
+    public String getSecretQuestion(String email) {
+        String sql = "SELECT secretquestion FROM users WHERE email = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
+            statement.setString(1, email);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getString("secretquestion");
@@ -69,10 +69,10 @@ public class UserDAO {
         }
     }
 
-    public boolean isSecretAnswerExists(String username, String secretanswer) {
-        String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND LOWER(secretanswer) = LOWER(?)";
+    public boolean isSecretAnswerExists(String email, String secretanswer) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ? AND LOWER(secretanswer) = LOWER(?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
+            statement.setString(1, email);
             statement.setString(2, secretanswer);
             ResultSet result = statement.executeQuery();
             return result.getInt(1) > 0;
@@ -82,11 +82,11 @@ public class UserDAO {
         }
     }
     
-    public boolean changePassword(String username, String password) {
-        String sql = "UPDATE users SET password = ? WHERE username = ?";
+    public boolean changePassword(String email, String password) {
+        String sql = "UPDATE users SET password = ? WHERE email = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, password);
-            statement.setString(2, username);
+            statement.setString(2, email);
             return statement.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
